@@ -26,3 +26,17 @@ console.log(solution('(()())((()))'))
 console.log(solution('((()()(()))(((())))()'))
 console.log(solution('()()()()(()()())()'))
 console.log(solution('(()((())()('))
+
+function stackSolution (s) {
+    const stack = [];
+
+    for(let i=0; i<s.length; i++) {
+        stack.push(s[i]);
+        if(stack.at(-1) === ")" && stack.at(-2) === '('){
+            stack.pop();
+            stack.pop();
+        }
+    }
+    return stack.length === 0;
+}
+
