@@ -5,15 +5,18 @@ function solution(genres, plays) {
     
     const genreHash = {};
     
+    // 가장 많이 재생된 장르를 찾기 위해 해시에 저장
     genres.forEach((genre, index) => {
         if(!genreHash[genre]) genreHash[genre] = 0;
         
         genreHash[genre] += plays[index];
     });
     
-    const hashMap = genres.map((genre, index) => ({genre, play: plays[index], index}))
+    // 장르 배열의 원소를 장르, 플레이 수, 인덱스 값을 가지는 객체로 변환
+    const genreList = genres.map((genre, index) => ({genre, play: plays[index], index}))
     
-    hashMap.sort((a, b) => {
+    // 재생된 장르 -> 장르 같으면 재생된 노래 -> 재생횟수 같으면 인덱스 순으로 정렬
+    genreList.sort((a, b) => {
         if(a.genre === b.genre) {
             if(a.play === b.play){
                 return 0
@@ -25,21 +28,15 @@ function solution(genres, plays) {
     
     const album = new Map();
 
-    hashMap.forEach(({genre, play, index}) => {
-        if(!album.has(genre)) {
-            album.set(genre, []);
-        }
-        if(album.has(genre) && album.get(genre).length < 2){
+    // 인덱스를 반환해야 하므로 정렬된 배열에서 2개까지 인덱스를 추출
+    genreList.forEach(({genre, index}) => {
+        if(!album.has(genre)) album.set(genre, []);
+
+        if(album.has(genre) && album.get(genre).length < 2) {
             const albums = [...album.get(genre), index];
             album.set(genre, albums);
         }
     })
-    
-    const result = [];
-    
-    for(const indexList of album.values()) {
-        result.push(indexList);    
-    }
-    
-    return result.flat();
+
+    return Array.from(album.values()).flat()
 }
